@@ -16,20 +16,21 @@ Microservice de gestion des avis produits — partie de l'architecture microserv
 ## 🗺️ Positionnement dans l'Architecture
 
 ```
-              Frontend (192.168.56.114)
-                      │
-                      ▼
-┌─────────────────────────────────────────────┐
-│  Kubernetes Cluster (192.168.56.111)        │
-│  Ingress :30080                             │
-│  ├── 🔐 auth-service    :3001               │
-│  ├── 📦 product-service :3002               │
-│  ├── 🛒 order-service   :3003               │
-│  └── ⭐ review-service  :3004  ← Ce service │
-└─────────────────────────────────────────────┘
-                      │
-                      ▼
-  MariaDB (192.168.56.115:3306) — ecommerce_db
+                 Frontend (192.168.56.114)
+                          │
+                          ▼
+      ┌──────────────────────────────────────┐
+      │  Kubernetes Cluster (192.168.56.111) │
+      │  Ingress :30080                      │
+      │  ├── 🔐 auth-service    :3001        │
+      │  ├── 📦 product-service :3002        │
+      │  ├── 🛒 order-service   :3003        │
+      │  └── ⭐ review-service  :3004 ← HERE │
+      └──────────────────────────────────────┘
+                          │
+                          ▼
+          MariaDB (192.168.56.115:3306)
+               ecommerce_db
 ```
 
 **Rôle de ce service :** Avis et notes produits (1-5 étoiles). Lecture publique, écriture authentifiée. Contrainte : 1 avis maximum par utilisateur par produit.
@@ -53,36 +54,32 @@ Microservice de gestion des avis produits — partie de l'architecture microserv
 ## 🔄 Pipeline CI/CD
 
 ```
-                    GitHub Push / Pull Request
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│  Job 1 : Test API (parallèle)                          │
-│  └── npm install + test-api.sh : 10-13 tests endpoints  │
-│  └── Dépendance : MariaDB 10.11                         │
-├─────────────────────────────────────────────────────────┤
-│  Job 2 : Dependency Scanning (parallèle)                │
-│  └── Trivy FS scan : scanne les vulnérabilités          │
-├─────────────────────────────────────────────────────────┤
-│  Job 3 : Build Docker Image (après tests réussis)      │
-│  └── Docker multi-stage : Node 20 Alpine                │
-│  └── Sauvegarde l'image en artefact                     │
-├─────────────────────────────────────────────────────────┤
-│  Job 4 : Scan Container (main uniquement)              │
-│  └── Trivy container scan : détecte vulnérabilités      │
-├─────────────────────────────────────────────────────────┤
-│  Job 5 : Push to GHCR (main uniquement)                │
-│  └── GitHub Container Registry : ghcr.io/...           │
-│  └── Tags : commit-sha + latest                        │
-└─────────────────────────────────────────────────────────┘
+              GitHub Push / Pull Request
+                        │
+                        ▼
+    ┌───────────────────────────────────────┐
+    │  Job 1 : Test API (parallèle)         │
+    │  └── npm install + test-api.sh        │
+    │  └── 10-13 tests endpoints            │
+    │  └── MariaDB 10.11 (dépendance)       │
+    ├───────────────────────────────────────┤
+    │  Job 2 : Dependency Scanning          │
+    │  └── Trivy FS scan                    │
+    │  └── Vulnérabilités des packages      │
+    ├───────────────────────────────────────┤
+    │  Job 3 : Build Docker Image           │
+    │  └── Docker multi-stage : Node 20     │
+    │  └── Image en artefact                │
+    ├───────────────────────────────────────┤
+    │  Job 4 : Scan Container (main only)   │
+    │  └── Trivy container scan             │
+    ├───────────────────────────────────────┤
+    │  Job 5 : Push to GHCR (main only)     │
+    │  └── ghcr.io/...                      │
+    │  └── Tags : sha + latest              │
+    └───────────────────────────────────────┘
 ```
 
-<details>
-  <summary><code>🦊⚙️ Afficher l'Architecture du Pipeline CI/CD (Gitlab)</code></summary>
-
-![Pipeline CI/CD](https://gitlab.com/yara_portfolio/devops/ecommerce/ecommerce-frontend/-/raw/main/.img/Pipeline-CICD-GitLab.png)
-
-</details>
 
 **Fichier CI/CD :**
 - `.github/workflows/ci.yml` — Pipeline GitHub Actions complète avec tests, scans de sécurité et déploiement
@@ -92,7 +89,7 @@ Microservice de gestion des avis produits — partie de l'architecture microserv
 ## ⚡ Quick Start
 
 ```bash
-git clone https://gitlab.com/yara_portfolio/devops/ecommerce/microservice/review-service.git
+git clone https://github.com/yaraportfolio/ecommerce-review-service.git
 cd review-service
 cp .env.example .env && nano .env
 
@@ -135,7 +132,6 @@ review-service/
 │   └── git-security-scan.sh      # Détection secrets
 ├── Dockerfile
 ├── Jenkinsfile-ci
-├── .gitlab-ci.yml
 └── .env.example
 ```
 
@@ -204,11 +200,11 @@ cd testapi && bash test-api.sh
 
 | Composant | Repository |
 |-----------|------------|
-| 🔐 Auth Service | [auth-service](https://gitlab.com/yara_portfolio/devops/ecommerce/microservice/auth-service) |
-| 📦 Product Service | [product-service](https://gitlab.com/yara_portfolio/devops/ecommerce/microservice/product-service) |
-| 🛒 Order Service | [order-service](https://gitlab.com/yara_portfolio/devops/ecommerce/microservice/order-service) |
-| ⎈ Helm Chart | [k8s-helm-chart](https://gitlab.com/yara_portfolio/devops/ecommerce/devops-tools/k8s-helm-chart) |
-| 🗄️ Base de données | [ecommerce-database](https://gitlab.com/yara_portfolio/devops/ecommerce/ecommerce-database) |
+| 🔐 Auth Service | [auth-service](https://github.com/yaraportfolio/ecommerce-auth-service) |
+| 📦 Product Service | [product-service](https://github.com/yaraportfolio/ecommerce-product-service) |
+| 🛒 Order Service | [order-service](https://github.com/yaraportfolio/ecommerce-order-service) |
+| ⎈ Helm Chart | [k8s-helm-chart](https://github.com/yaraportfolio/k8s-helm-chart) |
+| 🗄️ Base de données | [ecommerce-database](https://github.com/yaraportfolio/ecommerce-database) |
 
 ---
 
