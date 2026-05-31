@@ -100,8 +100,8 @@ run_test "9. PUT Review Endpoint Existence" "CODE=\$(curl -s -o /dev/null -w '%{
 run_test "10. Average Rating Calculation" "RATINGS=\$(curl -s http://localhost:${SERVICE_PORT}/api/reviews/product/1 | jq '[.[].rating] | add / length') && echo \"\$RATINGS\" | grep -qE '^[0-9]+(\.[0-9]+)?$'" "Calcul de la moyenne via jq"
 
 # Test DB : On cache le mot de passe dans l'affichage HTML
-DB_CMD="mariadb --skip-ssl -h ${DB_HOST} -u ${DB_USER} -p${DB_PASSWORD} ${DB_NAME} -sN -e 'SELECT COUNT(*) FROM reviews WHERE rating < 1 OR rating > 5'"
-run_test "11. DB Integrity - Ratings 1-5 Only" "$DB_CMD" "mariadb -h $DB_HOST -u ${DB_USER} -p**** ${DB_NAME} -e 'Check Ratings Range'"
+DB_CMD="COUNT=\$(mysql -h ${DB_HOST} -u ${DB_USER} -p${DB_PASSWORD} ${DB_NAME} -sN -e 'SELECT COUNT(*) FROM reviews WHERE rating < 1 OR rating > 5') && [ \"\$COUNT\" -eq 0 ]"
+run_test "11. DB Integrity - Ratings 1-5 Only" "$DB_CMD" "mysql -h $DB_HOST -u ${DB_USER} -p**** ${DB_NAME} -e 'Check Ratings Range'"
 
 # --- FINALISATION ---
 echo "----------------------------------------------------------------------" | tee -a "$LOG_FILE"
