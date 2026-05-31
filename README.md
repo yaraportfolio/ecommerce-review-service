@@ -1,15 +1,15 @@
 # ⭐ Review Service — Microservice Avis Produits
 
-![Node.js](https://img.shields.io/badge/Node.js-18-339933?logo=nodedotjs&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
-![Prometheus](https://img.shields.io/badge/Prometheus-metrics-E6522C?logo=prometheus&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?logo=github&logoColor=white)
 ![Trivy](https://img.shields.io/badge/Trivy-security_scan-1904DA?logo=aqua&logoColor=white)
-![Version](https://img.shields.io/badge/version-3.2-blue)
+![GHCR](https://img.shields.io/badge/GHCR-registry-24292e?logo=github&logoColor=white)
 
 Microservice de gestion des avis produits — partie de l'architecture microservices e-commerce déployée sur **Kubernetes** (Helm) ou **Docker Swarm** (Kong Gateway).
 
-> 💡 **Objectif Portfolio** : Ce service illustre la contrainte d'intégrité métier côté microservice — un utilisateur ne peut laisser qu'un seul avis par produit (contrainte UNIQUE en BD), enforced au niveau applicatif avec une réponse 409 Conflict.
+> 💡 **Objectif Portfolio** : Ce service illustre les contraintes métier côté microservice avec GitHub Actions CI/CD — intégrité, authentification et scans de sécurité automatisés.
 
 ---
 
