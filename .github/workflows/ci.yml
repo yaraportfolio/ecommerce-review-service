@@ -17,7 +17,6 @@ on:
 
 env:
   DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/review-service
-  DOCKER_TAG: ${{ github.sha | slice(0,7) }}
   SERVICE_PORT: 3004
 
 jobs:
@@ -39,6 +38,7 @@ jobs:
           POSTGRES_DB: reviews_db
           POSTGRES_USER: devops_user
           POSTGRES_PASSWORD: devops_password
+        # Vérifie que PostgreSQL est prêt toutes les 10 secondes (timeout 5s, max 3 tentatives)
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -75,8 +75,13 @@ jobs:
 
       - name: Run API tests
         env:
-          DATABASE_URL: postgres://devops_user:devops_password@localhost:5432/reviews_db
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: reviews_db
+          DB_USER: devops_user
+          DB_PASSWORD: devops_password
           JWT_SECRET: test_secret_key
+          SERVICE_PORT: 3004
         run: |
           chmod +x ./testapi/test-api.sh
           ./testapi/test-api.sh
@@ -122,8 +127,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          format: 'template'
-          template: '@/contrib/html.tpl'
+          format: 'table'
           output: 'dependency-report.html'
 
       - name: Upload dependency report
@@ -151,6 +155,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Génère le tag Docker (7 premiers caractères du commit SHA)
+      - name: Generate Docker tag
+        run: echo "DOCKER_TAG=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -218,8 +226,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
-          format: 'template'
-          template: '@/contrib/html.tpl'
+          format: 'table'
           output: 'container-report.html'
 
       - name: Upload container report
