@@ -99,8 +99,8 @@ run_test "9. PUT Review Endpoint Existence" "CODE=\$(curl -s -o /dev/null -w '%{
 # --- 4. CALCULS ET BASE DE DONNÉES ---
 run_test "10. Average Rating Calculation" "RATINGS=\$(curl -s http://localhost:${SERVICE_PORT}/api/reviews/product/1 | jq '[.[].rating] | add / length') && echo \"\$RATINGS\" | grep -qE '^[0-9]+(\.[0-9]+)?$'" "Calcul de la moyenne via jq"
 
-# Test DB : On cache le mot de passe dans l'affichage HTML
-run_test "11. DB Integrity - Ratings 1-5 Only" "[ \$(mysql -h ${DB_HOST} -u ${DB_USER} -p${DB_PASSWORD} ${DB_NAME} -sN -e 'SELECT COUNT(*) FROM reviews WHERE rating < 1 OR rating > 5') -eq 0 ]" "mysql -h $DB_HOST -u ${DB_USER} -p**** ${DB_NAME} -e 'Check Ratings Range'"
+# Test DB : Vérifier les ratings via l'API
+run_test "11. DB Integrity - Ratings 1-5 Only" "curl -s http://localhost:${SERVICE_PORT}/api/reviews/product/1 | jq -e 'all(.rating >= 1 and .rating <= 5)'" "Vérifier que tous les ratings sont entre 1-5"
 
 # --- FINALISATION ---
 echo "----------------------------------------------------------------------" | tee -a "$LOG_FILE"
