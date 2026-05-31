@@ -32,20 +32,21 @@ jobs:
       checks: write
 
     services:
-      postgres:
-        image: postgres:15-alpine
+      mariadb:
+        image: mariadb:10.11
         env:
-          POSTGRES_DB: reviews_db
-          POSTGRES_USER: devops_user
-          POSTGRES_PASSWORD: devops_password
-        # Vérifie que PostgreSQL est prêt toutes les 10 secondes (timeout 5s, max 3 tentatives)
+          MARIADB_ROOT_PASSWORD: root_password
+          MARIADB_DATABASE: reviews_db
+          MARIADB_USER: devops_user
+          MARIADB_PASSWORD: devops_password
+        # Vérifie que MariaDB est prêt toutes les 10 secondes (timeout 5s, max 3 tentatives)
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot_password || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
         ports:
-          - 5432:5432
+          - 3306:3306
 
     steps:
       - name: Checkout code
@@ -60,23 +61,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Wait for PostgreSQL
+      - name: Wait for MariaDB
         run: |
-          timeout 60 sh -c 'until pg_isready -h localhost -U devops_user; do
-            echo "⏳ Waiting for PostgreSQL instance..."
+          timeout 60 sh -c 'until mysqladmin ping -h 127.0.0.1 -u root -proot_password; do
+            echo "⏳ Waiting for MariaDB instance..."
             sleep 2
           done'
 
       - name: Setup test database
-        env:
-          PGPASSWORD: devops_password
         run: |
-          psql -h localhost -U devops_user -d reviews_db < ./testapi/data-test-api.sql
+          mysql -h 127.0.0.1 -u devops_user -pdevops_password reviews_db < ./testapi/data-test-api.sql
 
       - name: Run API tests
         env:
           DB_HOST: localhost
-          DB_PORT: 5432
+          DB_PORT: 3306
           DB_NAME: reviews_db
           DB_USER: devops_user
           DB_PASSWORD: devops_password
@@ -199,6 +198,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Génère le tag Docker (7 premiers caractères du commit SHA)
+      - name: Generate Docker tag
+        run: echo "DOCKER_TAG=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
@@ -254,6 +257,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Génère le tag Docker (7 premiers caractères du commit SHA)
+      - name: Generate Docker tag
+        run: echo "DOCKER_TAG=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
