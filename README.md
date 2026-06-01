@@ -1,4 +1,4 @@
-# ⭐ Review Service — Microservice Avis Produits
+# ⭐ Review Service - Microservice Avis Produits
 
 ![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
@@ -7,9 +7,9 @@
 ![Trivy](https://img.shields.io/badge/Trivy-security_scan-1904DA?logo=aqua&logoColor=white)
 ![GHCR](https://img.shields.io/badge/GHCR-registry-24292e?logo=github&logoColor=white)
 
-Microservice de gestion des avis produits — partie de l'architecture microservices e-commerce déployée sur **Kubernetes** (Helm) ou **Docker Swarm** (Kong Gateway).
+Microservice de gestion des avis produits - partie de l'architecture microservices e-commerce déployée sur **Kubernetes** (Helm) ou **Docker Swarm** (Kong Gateway).
 
-> 💡 **Objectif Portfolio** : Ce service illustre les contraintes métier côté microservice avec GitHub Actions CI/CD — intégrité, authentification et scans de sécurité automatisés.
+> 💡 **Objectif Portfolio** : Ce service illustre les contraintes métier côté microservice avec GitHub Actions CI/CD - intégrité, authentification et scans de sécurité automatisés.
 
 ---
 
@@ -41,13 +41,13 @@ Microservice de gestion des avis produits — partie de l'architecture microserv
 
 | Méthode | Endpoint | Auth | Description |
 |---------|----------|:----:|-------------|
-| `GET` | `/api/reviews/product/:id` | — | Tous les avis d'un produit |
+| `GET` | `/api/reviews/product/:id` | - | Tous les avis d'un produit |
 | `POST` | `/api/reviews` | JWT | Créer un avis (1 max/produit/user) |
 | `PUT` | `/api/reviews/:id` | JWT/Admin | Modifier un avis |
 | `DELETE` | `/api/reviews/:id` | JWT/Admin | Supprimer un avis |
 | `GET` | `/api/reviews` | Admin | Tous les avis (modération) |
-| `GET` | `/api/reviews/health` | — | Liveness probe |
-| `GET` | `/api/reviews/metrics` | — | Métriques Prometheus |
+| `GET` | `/api/reviews/health` | - | Liveness probe |
+| `GET` | `/api/reviews/metrics` | - | Métriques Prometheus |
 
 ---
 
@@ -82,7 +82,7 @@ Microservice de gestion des avis produits — partie de l'architecture microserv
 
 
 **Fichier CI/CD :**
-- `.github/workflows/ci.yml` — Pipeline GitHub Actions complète avec tests, scans de sécurité et déploiement
+- `.github/workflows/ci.yml` - Pipeline GitHub Actions complète avec tests, scans de sécurité et déploiement
 
 ---
 
@@ -109,8 +109,8 @@ npm install && npm start
 | `DB_PORT` | Port MariaDB | `3306` | ✅ |
 | `DB_NAME` | Base de données | `ecommerce_db` | ✅ |
 | `DB_USER` | Utilisateur BD | `devops_user` | ✅ |
-| `DB_PASSWORD` | Mot de passe BD | — | ✅ |
-| `JWT_SECRET` | Clé JWT (même que auth-service) | — | ✅ |
+| `DB_PASSWORD` | Mot de passe BD | - | ✅ |
+| `JWT_SECRET` | Clé JWT (même que auth-service) | - | ✅ |
 
 ---
 
@@ -210,6 +210,6 @@ cd testapi && bash test-api.sh
 
 ## 👨‍💻 Auteur
 
-**Yara Mahi Mohamed** — Portfolio DevOps & SRE
+**Yara Mahi Mohamed** - Portfolio DevOps & SRE
 
 *⭐ N'oubliez pas de star ce repo si vous le trouvez utile !*
