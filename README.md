@@ -2,18 +2,30 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-10.11-003545?logo=mariadb&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?logo=github&logoColor=white)
 ![Trivy](https://img.shields.io/badge/Trivy-security_scan-1904DA?logo=aqua&logoColor=white)
 ![GHCR](https://img.shields.io/badge/GHCR-registry-24292e?logo=github&logoColor=white)
 
-Microservice de gestion des avis produits - partie de l'architecture microservices e-commerce déployée sur **Kubernetes** (Helm) ou **Docker Swarm** (Kong Gateway).
+Microservice de gestion des avis produits - partie de l'architecture microservices e-commerce, déployée sur **AWS (EKS Auto Mode + Helm)** ou en **self-hosted** (Kubernetes / Docker Swarm).
 
 > 💡 **Objectif Portfolio** : Ce service illustre les contraintes métier côté microservice avec GitHub Actions CI/CD - intégrité, authentification et scans de sécurité automatisés.
 
 ---
 
-## 🗺️ Positionnement dans l'Architecture
+## ☁️ Déploiement Cloud AWS — *production actuelle*
+
+Ce microservice tourne sur **AWS EKS (Auto Mode) + Helm**, image publiée sur **GHCR** (public), base **RDS MySQL**, exposé via un **ALB interne** géré par l'AWS Load Balancer Controller. Le frontend est servi en 3 variantes (EC2 / Beanstalk / ECS Fargate) derrière un ALB public.
+
+👉 **Infra AWS complète, guides pas-à-pas et Terraform :** [➜ ecommerce-terraform-aws](https://github.com/yaraportfolio/ecommerce-terraform-aws)
+
+![Architecture AWS](https://raw.githubusercontent.com/yaraportfolio/ecommerce-terraform-aws/main/img/architecture.png)
+
+> ℹ️ Le schéma ci-dessous illustre le **positionnement on-premise / self-hosted** (cluster local `192.168.56.x`). Le déploiement AWS suit la même topologie logique avec des composants managés (EKS, RDS, ALB).
+
+---
+
+## 🗺️ Positionnement dans l'Architecture — *on-premise*
 
 ```
                  Frontend (192.168.56.114)
