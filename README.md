@@ -31,14 +31,14 @@ Ce microservice tourne sur **AWS EKS (Auto Mode) + Helm**, image publiée sur **
                  Frontend (192.168.56.114)
                           │
                           ▼
-      ┌──────────────────────────────────────┐
-      │  Kubernetes Cluster (192.168.56.111) │
-      │  Ingress :30080                      │
+      ┌───────────────────────────────────────┐
+      │  Kubernetes Cluster (192.168.56.111)  │
+      │  Ingress :30080                       │
       │  ├── 🔐 auth-service    :3001        │
       │  ├── 📦 product-service :3002        │
       │  ├── 🛒 order-service   :3003        │
       │  └── ⭐ review-service  :3004 ← HERE │
-      └──────────────────────────────────────┘
+      └───────────────────────────────────────┘
                           │
                           ▼
           MariaDB (192.168.56.115:3306)
